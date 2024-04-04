@@ -74,3 +74,64 @@ document.addEventListener('DOMContentLoaded', function() {
     passwordInput.addEventListener('input', validatePassword);
     confirmPasswordInput.addEventListener('input', validateConfirmPassword);
 });
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("registerForm");
+
+    // Флаг для проверки того, был ли уже добавлен обработчик события отправки формы
+    let isFormSubmitted = false;
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+
+        // Проверяем, был ли уже отправлен запрос
+        if (isFormSubmitted) {
+            return;
+        }
+
+        // Устанавливаем флаг в значение true, чтобы предотвратить повторную отправку данных
+        isFormSubmitted = true;
+
+        // Получаем значения полей формы
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        // Создаем объект с данными пользователя
+        const userData = {
+            username: username,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword
+        };
+
+        // Отправляем данные на сервер
+        fetch("https://810a2ec2ff8866fa.mokky.dev/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Ошибка сети");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Успешно зарегистрирован:", data);
+            // Здесь можно добавить обработку успешной регистрации, например, перенаправление на другую страницу или отображение сообщения об успехе
+        })
+        .catch(error => {
+            console.error("Ошибка регистрации:", error.message);
+            // Здесь можно добавить обработку ошибки, например, отображение сообщения об ошибке пользователю
+        });
+    });
+});
+
+
+
+
